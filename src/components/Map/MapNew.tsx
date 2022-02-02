@@ -16,8 +16,8 @@ const MapNew = () => {
   return (
     <div className={styles["map-wrapper"]}>
       <GoogleMapRect
-        // bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_KEY }}
-        bootstrapURLKeys={{ key: "AIzaSyCxLuun1rx2yzU0OfWBc0QLYJmi_VU1iUM" }}
+        bootstrapURLKeys={{ key: process.env.GOOGLE_KEY }}
+        // bootstrapURLKeys={{ key: "AIzaSyCxLuun1rx2yzU0OfWBc0QLYJmi_VU1iUM" }}
         defaultCenter={{ lat: 52.2, lng: 21 }}
         defaultZoom={zoom}
         yesIWantToUseGoogleMapApiInternals
@@ -43,9 +43,9 @@ const MapNew = () => {
           console.log(pointCount);
 
           const properties = {
-            pointCount: pointCount || null,
+            pointCount: pointCount,
             arrLength: arr.length,
-            markerName: cluster.name || null,
+            markerName: cluster.name,
           };
 
           if (isCluster) {
@@ -56,31 +56,16 @@ const MapNew = () => {
                 lng={longitude}
                 {...properties}
               />
-              //   <Marker key={cluster.id} lat={latitude} lng={longitude}>
-              //     <button
-              //       className={`${styles.marker} ${styles["marker--cluster"]}`}
-              //       style={{
-              //         width: `${32 + pointCount / arr.length}px`,
-              //         height: `${32 + pointCount / arr.length}px`,
-              //       }}
-              //     >
-              //       <img src="/m4.png" alt={cluster.name} />
-              //       <p>{pointCount}</p>
-              //     </button>
-              //   </Marker>
             );
           }
 
           return (
-            <Marker key={cluster.pointId} lat={latitude} lng={longitude} />
-            //   <button
-            //     className={`${styles.marker}  ${
-            //       cluster.status.toLowerCase() !== "available" &&
-            //       styles["marker--unavailable"]
-            //     }`}
-            //   >
-            //     <img src="/car.png" alt="" />
-            //   </button>
+            <Marker
+              key={cluster.pointId}
+              lat={latitude}
+              lng={longitude}
+              {...properties}
+            />
           );
         })}
       </GoogleMapRect>

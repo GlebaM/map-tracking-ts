@@ -1,8 +1,7 @@
-import React from "react";
 import styles from "./MapNew.module.scss";
 
-const Markerr = ({ pointCount, arrLength, markerName }: any) => {
-    console.log(markerName)
+const Marker = ({ pointCount, arrLength, markerName }: any) => {
+  console.log(markerName);
   return (
     <button
       className={`${styles.marker} ${styles["marker--cluster"]}`}
@@ -21,4 +20,4 @@ const Markerr = ({ pointCount, arrLength, markerName }: any) => {
   );
 };
 
-export default Markerr;
+export default Marker;

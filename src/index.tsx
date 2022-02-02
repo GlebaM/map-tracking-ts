@@ -1,8 +1,13 @@
-import React from "react";
 import ReactDOM from "react-dom";
 import "./index.scss";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import * as dotenv from "dotenv";
+dotenv.config();
+// const path = require("path");
+// require("dotenv").config({ path: path.resolve(__dirname, "../../.env") });
+// const dotenv = require("dotenv");
+// dotenv.config();
 
 ReactDOM.render(<App />, document.getElementById("root"));
 
