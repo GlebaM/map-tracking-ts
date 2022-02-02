@@ -1,0 +1,42 @@
+.map-wrapper {
+  flex: 1 1 100%;
+
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(12, 43, 66, 0.7);
+}
+
+.marker {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  border: none;
+  display: flex;
+  cursor: pointer;
+  color: crimson;
+  font-weight: 800;
+  font-size: 1rem;
+
+  filter: drop-shadow(0 1px 0.2rem crimsson);
+  background-color: rgba(165, 42, 42, 0);
+  transition: 0.15s;
+
+  & p {
+    position: relative;
+    top: 50%;
+    left: 0;
+  }
+
+  & img {
+    width: 100%;
+  }
+
+  &:active {
+    filter: drop-shadow(0 1px 0.1rem crimson);
+    transform: translateY(1px);
+  }
+}
+
+.marker.marker--unavailable {
+  filter: saturate(10%) drop-shadow(0 1px 0.2rem rgb(73, 50, 55));
+}

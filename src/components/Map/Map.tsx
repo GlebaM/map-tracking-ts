@@ -5,14 +5,6 @@ import {
   MarkerClusterer,
 } from "@react-google-maps/api";
 
-// interface MapProps extends google.maps.MapOptions {
-//   style?: { [key: string]: string };
-//   className?: any;
-//   onClick?: (e: google.maps.MapMouseEvent) => void;
-//   onIdle?: (map: google.maps.Map) => void;
-//   defaultZoom?: number;
-// }
-
 const locations = [
   { id: 1, position: { lat: 43.718234, lng: 20.363181 }, description: "any" },
   { id: 2, position: { lat: 41.563913, lng: 27.154312 }, description: "any" },
@@ -50,32 +42,118 @@ const center = {
   lng: 21.035,
 };
 
-// const options = {
-//   imagePath:
-//     "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m", // so you must have m1.png, m2.png, m3.png, m4.png, m5.png and m6.png in that folder
-// };
+const options = {
+  imagePath: "./m3.png",
+};
+const options2 = {
+  imagePath:
+    "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m",
+};
+const options3 = {
+  imagePath:
+    "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m",
+};
+const options4 = {
+  imagePath:
+    "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m",
+};
 
 function createKey(location: any) {
   return location.lat + location.lng;
 }
 
 const Map: React.FC = () => {
+  const onMarkerClick = () => {
+    console.log("ADIOS");
+  };
   return (
     <LoadScript googleMapsApiKey="AIzaSyCxLuun1rx2yzU0OfWBc0QLYJmi_VU1iUM">
       <GoogleMap mapContainerStyle={mapStyle} zoom={6} center={center}>
-        {/* {locations.map((item) => (
-          <Marker title={item.description} position={item.position} />
-        ))} */}
-        <MarkerClusterer>
+        <MarkerClusterer
+          options={options}
+          gridSize={80}
+          averageCenter
+          enableRetinaIcons
+          maxZoom={15}
+          zoomOnClick={true}
+          styles={[
+            {
+              url: "/assets/map-cluster/m3.png",
+              height: 80,
+              width: 80,
+              fontFamily: "Lato",
+              textColor: "#1a1001",
+            },
+            {
+              url: "/src/assets/map-cluster/m2.png",
+              height: 29,
+              width: 29,
+              fontFamily: "Lato",
+              textColor: "#fa0b0b",
+            },
+            {
+              url: "/src/assets/map-cluster/m3.png",
+              height: 34,
+              width: 34,
+              fontFamily: "Lato",
+              textColor: "#0964db",
+            },
+          ]}
+        >
           {(clusterer) =>
-            locations.map((item) => (
-              <Marker
-                key={createKey(item.position)}
-                title={item.description}
-                position={item.position}
-                clusterer={clusterer}
-              />
-            ))
+            locations
+              .slice(0, 5)
+              .map((item) => (
+                <Marker
+                  onClick={onMarkerClick}
+                  key={createKey(item.position)}
+                  title={item.description}
+                  position={item.position}
+                  clusterer={clusterer}
+                />
+              ))
+          }
+        </MarkerClusterer>
+        <MarkerClusterer options={options2}>
+          {(clusterer) =>
+            locations
+              .slice(6, 14)
+              .map((item) => (
+                <Marker
+                  key={createKey(item.position)}
+                  title={item.description}
+                  position={item.position}
+                  clusterer={clusterer}
+                />
+              ))
+          }
+        </MarkerClusterer>
+        <MarkerClusterer options={options3}>
+          {(clusterer) =>
+            locations
+              .slice(15, 18)
+              .map((item) => (
+                <Marker
+                  key={createKey(item.position)}
+                  title={item.description}
+                  position={item.position}
+                  clusterer={clusterer}
+                />
+              ))
+          }
+        </MarkerClusterer>
+        <MarkerClusterer options={options4}>
+          {(clusterer) =>
+            locations
+              .slice(19, -1)
+              .map((item) => (
+                <Marker
+                  key={createKey(item.position)}
+                  title={item.description}
+                  position={item.position}
+                  clusterer={clusterer}
+                />
+              ))
           }
         </MarkerClusterer>
       </GoogleMap>
