@@ -16,9 +16,9 @@
   color: crimson;
   font-weight: 800;
   font-size: 1rem;
-
-  filter: drop-shadow(0 1px 0.2rem crimsson);
-  background-color: rgba(165, 42, 42, 0);
+  transform: translate(-50%, -50%);
+  background-color: transparent;
+  filter: drop-shadow(0 1px 0.1rem crimson);
   transition: 0.15s;
 
   & p {
@@ -33,10 +33,10 @@
 
   &:active {
     filter: drop-shadow(0 1px 0.1rem crimson);
-    transform: translateY(1px);
+    transform: translate(-50%, -45%);
   }
-}
 
-.marker.marker--unavailable {
-  filter: saturate(10%) drop-shadow(0 1px 0.2rem rgb(73, 50, 55));
+  &--unavailable {
+    filter: saturate(10%) drop-shadow(0 1px 0.2rem rgb(73, 50, 55));
+  }
 }

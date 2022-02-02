@@ -1,51 +1,21 @@
-import React, { useRef, useState } from "react";
-import useSwr from "swr";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { useRef, useState, useCallback } from "react";
 import GoogleMapRect from "google-map-react";
-import useSupercluster from "use-supercluster";
 import styles from "./MapNew.module.scss";
+import { useGetData } from "../../lib/api";
+import Marker from "./Marker";
 
-const fetcher = (...args: any) =>
-  fetch(args).then((response) => response.json());
-
-const Marker = ({ children }: any) => children;
+// const Marker = ({ children }: any) => children;
 
 const MapNew = () => {
   const mapRef = useRef();
-  const [zoom, setZoom] = useState(10);
-  const [bounds, setBounds] = useState<null | GoogleMapRect.Bounds | any>(null);
+  const [zoom, setZoom] = useState<number>(10);
+  const [bounds, setBounds] = useState<any>(null);
 
-  //Data loaded from server
-  const url = "https://dev.vozilla.pl/api-client-portal/map?objectType=VEHICLE";
-  const { data, error } = useSwr(url, fetcher);
-  const dataPoints = data && !error ? data.objects.slice() : [];
-  const points = dataPoints.map((item: any) => ({
-    cluster: false,
-    name: item.name,
-    type: item.discriminator,
-    status: item.status,
-    battery: item.batteryLevelPct,
-    pointId: item.id,
-    geometry: {
-      type: "Point",
-      coordinates: [item.location.longitude, item.location.latitude],
-    },
-  }));
-  console.log(dataPoints);
-
-  // Get clusters
-  const { clusters } = useSupercluster({
-    points,
-    bounds,
-    zoom,
-    options: { radius: 75, maxZoom: 18 },
-  });
-  console.log(clusters);
+  const { clusters } = useGetData(bounds, zoom);
 
   return (
     <div className={styles["map-wrapper"]}>
       <GoogleMapRect
-        // ref={mapRef}
         // bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_KEY }}
         bootstrapURLKeys={{ key: "AIzaSyCxLuun1rx2yzU0OfWBc0QLYJmi_VU1iUM" }}
         defaultCenter={{ lat: 52.2, lng: 21 }}
@@ -54,7 +24,7 @@ const MapNew = () => {
         onGoogleApiLoaded={(map: any) => {
           mapRef.current = map;
         }}
-        onChange={({ zoom, bounds }) => {
+        onChange={useCallback(({ zoom, bounds }) => {
           setZoom(zoom);
           setBounds([
             bounds.nw.lng,
@@ -62,38 +32,55 @@ const MapNew = () => {
             bounds.se.lng,
             bounds.nw.lat,
           ]);
-        }}
+        }, [])}
       >
-        {clusters.map((cluster) => {
+        {clusters.map((cluster: any, i: any, arr: any) => {
+          console.log("RENDERS");
           const [longitude, latitude] = cluster.geometry.coordinates;
 
-          const { cluster: isCluster, point_count: pointCout } =
-            cluster.properties
-              ? cluster.properties
-              : { cluster: cluster, point_count: null };
+          const { cluster: isCluster, point_count: pointCount } =
+            cluster.properties;
+          console.log(pointCount);
+
+          const properties = {
+            pointCount: pointCount || null,
+            arrLength: arr.length,
+            markerName: cluster.name || null,
+          };
 
           if (isCluster) {
             return (
-              <Marker key={cluster.id} lat={latitude} lng={longitude}>
-                <button className={styles.marker}>
-                  <img src="/car.png" alt={cluster.name} />
-                  <p>{pointCout}</p>
-                </button>
-              </Marker>
+              <Marker
+                key={cluster.id}
+                lat={latitude}
+                lng={longitude}
+                {...properties}
+              />
+              //   <Marker key={cluster.id} lat={latitude} lng={longitude}>
+              //     <button
+              //       className={`${styles.marker} ${styles["marker--cluster"]}`}
+              //       style={{
+              //         width: `${32 + pointCount / arr.length}px`,
+              //         height: `${32 + pointCount / arr.length}px`,
+              //       }}
+              //     >
+              //       <img src="/m4.png" alt={cluster.name} />
+              //       <p>{pointCount}</p>
+              //     </button>
+              //   </Marker>
             );
           }
 
           return (
-            <Marker key={cluster.pointId} lat={latitude} lng={longitude}>
-              <button
-                className={`${styles.marker} ${
-                  cluster.status.toLowerCase() !== "available" &&
-                  styles["marker--unavailable"]
-                }`}
-              >
-                <img src="/car.png" alt="haha" />
-              </button>
-            </Marker>
+            <Marker key={cluster.pointId} lat={latitude} lng={longitude} />
+            //   <button
+            //     className={`${styles.marker}  ${
+            //       cluster.status.toLowerCase() !== "available" &&
+            //       styles["marker--unavailable"]
+            //     }`}
+            //   >
+            //     <img src="/car.png" alt="" />
+            //   </button>
           );
         })}
       </GoogleMapRect>
@@ -102,4 +89,3 @@ const MapNew = () => {
 };
 
 export default MapNew;
-// marker--anavailable
