@@ -19,8 +19,6 @@ const MapNew = () => {
     zoom,
     options: { radius: 175, maxZoom: 18 },
   });
-  console.log(poiClusters);
-  console.log(mapCtx.poi);
 
   // Get clusters
   const { clusters } = useSupercluster({
@@ -29,7 +27,6 @@ const MapNew = () => {
     zoom,
     options: { radius: 55, maxZoom: 20 },
   });
-  console.log(clusters);
 
   return (
     <div className={styles["map-wrapper"]}>
