@@ -1,4 +1,4 @@
-import MapNew from "./components/Map/MapNew";
+import MapNew from "./components/Map/Maps";
 import SearchForm from "./components/Map/SearchForm";
 import styles from "./App.module.scss";
 

@@ -1,19 +1,18 @@
 import { useRef, useState, useCallback, useContext } from "react";
 import GoogleMapRect from "google-map-react";
 import Marker from "./Marker";
-import styles from "./MapNew.module.scss";
+import styles from "./Maps.module.scss";
 import MapContext from "../../store/map-context";
 import useSupercluster from "use-supercluster";
 import MarkerPoi from "./MarkerPoi";
 
 const MapNew = () => {
   const mapRef = useRef();
-  const [zoom, setZoom] = useState<number>(10);
+  const [zoom, setZoom] = useState<number>(6);
   const [bounds, setBounds] = useState<number[] | null>(null);
   const mapCtx = useContext(MapContext);
 
   // Get POI clusters
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { clusters: poiClusters } = useSupercluster({
     points: mapCtx.poi,
     bounds,
@@ -28,7 +27,7 @@ const MapNew = () => {
     points: mapCtx.filteredClusters ? mapCtx.filteredClusters : mapCtx.clusters,
     bounds,
     zoom,
-    options: { radius: 35, maxZoom: 20 },
+    options: { radius: 55, maxZoom: 20 },
   });
   console.log(clusters);
 
