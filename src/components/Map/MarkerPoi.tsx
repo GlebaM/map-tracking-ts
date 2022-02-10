@@ -3,6 +3,7 @@ import styles from "./Marker.module.scss";
 import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
 import styled from "@emotion/styled";
+import { IconButton } from "@mui/material";
 
 const PopupItem = styled(Typography)`
   padding-inline: 1rem;
@@ -14,7 +15,7 @@ const PopupItem = styled(Typography)`
   background: #0e194697;
   color: #fbf9f9;
   text-shadow: 0 0 0.1rem #eedada;
-  border-bottom: 1px solid #e6e4e4;
+  border-bottom: 1px solid #fbf9f9;
   &:last-child {
     border-bottom: none;
   }
@@ -23,25 +24,14 @@ const PopupItem = styled(Typography)`
   }
 `;
 
-const Marker = ({
+const MarkerPoi = ({
   pointCount,
   arrLength,
-  markerName,
-  status,
-  battery,
-  carType,
-  range,
-}: markerType) => {
-  const [mouseOver, setMouseOver] = useState(false);
+  address,
+  category,
+  name,
+}: markerPoiType) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-
-  const onClickHandler = (event: any) => {
-    setMouseOver(true);
-    setAnchorEl(event.currentTarget);
-  };
-  const onBlurHandler = () => {
-    setMouseOver(true);
-  };
 
   const handlePopoverOpen = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -57,44 +47,44 @@ const Marker = ({
     <>
       <div
         style={{
-          width: `${36 + (pointCount || 0 / arrLength) * 4}px`,
+          width: `${36 + (pointCount || 0 / arrLength) * 1.3}px`,
+          height: `${36 + (pointCount || 0 / arrLength) * 1.3}px`,
           transform: "translate(-50%, -50%)",
         }}
       >
-        <Typography
-          aria-owns={open ? "mouse-over-popover" : undefined}
-          aria-haspopup="true"
+        <IconButton
+          color="success"
           onMouseEnter={handlePopoverOpen}
+          onBlur={handlePopoverClose}
+          className={styles.marker}
+          aria-owns={open ? "mouse-over-popover" : undefined}
           onMouseLeave={handlePopoverClose}
           onClick={handlePopoverOpen}
-          sx={{ letterSpacing: "3px" }}
+          style={{
+            width: `100%`,
+            height: "100%",
+          }}
         >
-          <button
-            onMouseEnter={!!markerName ? onClickHandler : () => {}}
-            onBlur={!!markerName ? onBlurHandler : () => {}}
-            className={`${styles.marker} ${
-              status?.toLowerCase() === "unavailable" &&
-              styles["marker--unavailable"]
-            } `}
-            style={{
-              width: `100%`,
-            }}
-          >
-            {markerName ? (
-              <img src="/m8.png" alt={markerName} />
+          {name ? (
+            category.toLocaleLowerCase() === "ciekawe miejsca" ? (
+              <img src="/cool-places.png" alt={name} />
+            ) : category.toLocaleLowerCase() === "stacje kolejowe" ? (
+              <img src="/train.png" alt={name} />
             ) : (
-              <img src="/m1.png" alt={markerName || "car"} />
-            )}
-            {pointCount && pointCount > 0 && (
-              <p
-                className={`${styles.marker__badge} ${styles["marker__badge--car"]}`}
-              >
-                {pointCount}
-              </p>
-            )}
-          </button>
-        </Typography>
-        {mouseOver && (
+              <img src="/gnome.png" alt={name} />
+            )
+          ) : (
+            <p className={styles.marker__circle}></p>
+          )}
+          {pointCount && pointCount > 0 && (
+            <p
+              className={`${styles.marker__badge} ${styles["marker__badge--poi"]}`}
+            >
+              {pointCount}
+            </p>
+          )}
+        </IconButton>
+        {name && (
           <Popover
             id="mouse-over-popover"
             sx={{
@@ -114,19 +104,16 @@ const Marker = ({
             disableRestoreFocus
           >
             <PopupItem>
-              Name: <span>{markerName}</span>
+              Place Name: <span>{name}</span>
             </PopupItem>
             <PopupItem>
-              Status: <span>{status?.toLowerCase()}</span>
+              City:{" "}
+              <span>{`${address.slice(0, 1).toLocaleUpperCase()}${address.slice(
+                1
+              )}`}</span>
             </PopupItem>
             <PopupItem>
-              Range: <span>{`${range}km`}</span>
-            </PopupItem>
-            <PopupItem>
-              Battery: <span>{battery}%</span>
-            </PopupItem>
-            <PopupItem>
-              Car type: <span>{carType.toLowerCase()}</span>
+              Category: <span>{category}</span>
             </PopupItem>
           </Popover>
         )}
@@ -135,4 +122,4 @@ const Marker = ({
   );
 };
 
-export default Marker;
+export default MarkerPoi;

@@ -1,23 +1,42 @@
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useContext } from "react";
 import GoogleMapRect from "google-map-react";
-import styles from "./MapNew.module.scss";
-import { useGetData } from "../../lib/api";
 import Marker from "./Marker";
-
-// const Marker = ({ children }: any) => children;
+import styles from "./MapNew.module.scss";
+import MapContext from "../../store/map-context";
+import useSupercluster from "use-supercluster";
+import MarkerPoi from "./MarkerPoi";
 
 const MapNew = () => {
   const mapRef = useRef();
   const [zoom, setZoom] = useState<number>(10);
-  const [bounds, setBounds] = useState<any>(null);
+  const [bounds, setBounds] = useState<number[] | null>(null);
+  const mapCtx = useContext(MapContext);
 
-  const { clusters } = useGetData(bounds, zoom);
+  // Get POI clusters
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { clusters: poiClusters } = useSupercluster({
+    points: mapCtx.poi,
+    bounds,
+    zoom,
+    options: { radius: 175, maxZoom: 18 },
+  });
+  console.log(poiClusters);
+  console.log(mapCtx.poi);
+
+  // Get clusters
+  const { clusters } = useSupercluster({
+    points: mapCtx.filteredClusters ? mapCtx.filteredClusters : mapCtx.clusters,
+    bounds,
+    zoom,
+    options: { radius: 35, maxZoom: 20 },
+  });
+  console.log(clusters);
 
   return (
     <div className={styles["map-wrapper"]}>
       <GoogleMapRect
-        bootstrapURLKeys={{ key: process.env.GOOGLE_KEY }}
-        // bootstrapURLKeys={{ key: "AIzaSyCxLuun1rx2yzU0OfWBc0QLYJmi_VU1iUM" }}
+        // bootstrapURLKeys={{ key: process.env.GOOGLE_KEY }}
+        bootstrapURLKeys={{ key: "AIzaSyCxLuun1rx2yzU0OfWBc0QLYJmi_VU1iUM" }}
         defaultCenter={{ lat: 52.2, lng: 21 }}
         defaultZoom={zoom}
         yesIWantToUseGoogleMapApiInternals
@@ -34,18 +53,20 @@ const MapNew = () => {
           ]);
         }, [])}
       >
-        {clusters.map((cluster: any, i: any, arr: any) => {
-          console.log("RENDERS");
+        {clusters.map((cluster, _i, arr) => {
           const [longitude, latitude] = cluster.geometry.coordinates;
 
           const { cluster: isCluster, point_count: pointCount } =
             cluster.properties;
-          console.log(pointCount);
 
           const properties = {
             pointCount: pointCount,
             arrLength: arr.length,
             markerName: cluster.name,
+            status: cluster?.status,
+            battery: cluster.battery,
+            carType: cluster.carType,
+            range: cluster.range,
           };
 
           if (isCluster) {
@@ -61,6 +82,42 @@ const MapNew = () => {
 
           return (
             <Marker
+              key={cluster.pointId}
+              lat={latitude}
+              lng={longitude}
+              {...properties}
+            />
+          );
+        })}
+
+        {poiClusters.map((cluster, _i, arr) => {
+          const [longitude, latitude] = cluster.geometry.coordinates;
+
+          const { cluster: isCluster, point_count: pointCount } =
+            cluster.properties;
+
+          const properties = {
+            pointCount: pointCount,
+            arrLength: arr.length,
+            address: cluster.address,
+            category: cluster.category,
+            pointId: cluster.pointId,
+            name: cluster.name,
+          };
+
+          if (isCluster) {
+            return (
+              <MarkerPoi
+                key={cluster.id}
+                lat={latitude}
+                lng={longitude}
+                {...properties}
+              />
+            );
+          }
+
+          return (
+            <MarkerPoi
               key={cluster.pointId}
               lat={latitude}
               lng={longitude}
