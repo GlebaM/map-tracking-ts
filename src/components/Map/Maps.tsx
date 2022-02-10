@@ -31,8 +31,8 @@ const MapNew = () => {
   return (
     <div className={styles["map-wrapper"]}>
       <GoogleMapRect
-        // bootstrapURLKeys={{ key: process.env.GOOGLE_KEY }}
-        bootstrapURLKeys={{ key: "AIzaSyCxLuun1rx2yzU0OfWBc0QLYJmi_VU1iUM" }}
+        bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_KEY }}
+        // bootstrapURLKeys={{ key: "AIzaSyCxLuun1rx2yzU0OfWBc0QLYJmi_VU1iUM" }}
         defaultCenter={{ lat: 52.2, lng: 21 }}
         defaultZoom={zoom}
         yesIWantToUseGoogleMapApiInternals

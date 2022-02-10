@@ -1,7 +1,7 @@
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      GOOGLE_KEY: string;
+      REACT_APP_GOOGLE_KEY: string;
     }
   }
 }

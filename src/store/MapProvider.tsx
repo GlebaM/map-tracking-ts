@@ -1,5 +1,4 @@
 import { useReducer, useEffect, useCallback } from "react";
-
 import React from "react";
 import MapContext from "./map-context";
 import { getData, getPoiData } from "../hooks/useApi";
